@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body style="text-align: center; padding-top: 50px;">
+  <h1 style="margin-bottom: 50px;">Love Percentage Meter💕</h1>
+  Name (Male) <input type="text" id="maleName">
+  Name (Female) <input type="text" id="femaleName">
+  <button onclick="onClick()">Send</button>
+  <div id="mainArea"></div>
+</body>
+<script>
+  function rate(data) {
+    let rate = "";
+    if(data >= 90) {
+      rate = "💕";
+    } else if(data >= 70 && data < 90) {
+      rate = "🤗";
+    } else if(data >= 50 && data < 70) {
+      rate = "🫡";
+    } else if(data >= 30 && data < 50) {
+      rate = "🤡";
+    } else if(data < 30) {
+      rate = "🦥";
+    }
+    return rate;
+  }
+  function sendResponse(data) {
+    console.log(data);
+    const mainDiv = document.getElementById("mainArea");
+    mainDiv.innerHTML = "";
+    mainDiv.style.margin = "20px";
+    mainDiv.style.paddingTop = "30px";
+    const nDiv = document.createElement("div");
+    const nameM_span = document.createElement("span");
+    nameM_span.innerHTML = data.nameM + "       ❤️ ";
+    nameM_span.style.fontSize = "30px";
+    const nameF_span = document.createElement("span");
+    nameF_span.innerHTML = data.nameF;
+    nameF_span.style.fontSize = "30px";
+    const resDiv = document.createElement("h2");
+    resDiv.innerHTML = data.percent + "% " + rate(data.percent);
+    resDiv.style.fontSize = "40px";
+
+    nDiv.appendChild(nameM_span);
+    nDiv.appendChild(nameF_span);
+    nDiv.appendChild(resDiv);
+    mainDiv.appendChild(nDiv);
+    
+  }
+  function callback(resp) {
+    resp.json().then(sendResponse);
+  }
+  function onClick() {
+    const nameM = document.getElementById("maleName").value;
+    const nameF = document.getElementById("femaleName").value;
+    fetch("http://localhost:3000/getNames",{
+          method: "POST",
+          body: JSON.stringify({
+            nameM: nameM,
+            nameF: nameF
+          }),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }).then(callback);
+  }
+</script>
+</html>
